@@ -26,6 +26,11 @@ import * as THREE from '../lib/three/build/three.module.js';
 
 import { GUI } from '../lib/three/examples/jsm/libs/dat.gui.module.js';
 
+import { Cube } from './Cube.js';
+import { Model } from './Model.js';
+import { FBXLoader } from '../lib/three/examples/jsm/loaders/FBXLoader.js';
+
+
 import { OrbitControls } from '../lib/three/examples/jsm/controls/OrbitControls.js';
 import { EffectComposer } from '../lib/three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from '../lib/three/examples/jsm/postprocessing/RenderPass.js';
@@ -33,56 +38,99 @@ import { ShaderPass } from '../lib/three/examples/jsm/postprocessing/ShaderPass.
 import { PixelShader } from '../lib/three/examples/jsm/shaders/PixelShader.js';
 import { PixelFlow } from '../shaders/PixelFlow.js';
 
-
+let container, scene, camera, renderer, gui;
+let composer, pixelPass, params;
 
 //COMMON
-let container = document.getElementById( SETTINGS.container );
-let scene = new THREE.Scene();
-let camera = new THREE.PerspectiveCamera( 75, SETTINGS.width / SETTINGS.height, 0.1, 1000 );
-let renderer = new THREE.WebGLRenderer({ antialias : SETTINGS.antialias, canvas: container });
+container = document.getElementById( SETTINGS.container );
+scene = new THREE.Scene();
+camera = new THREE.PerspectiveCamera( 75, SETTINGS.width / SETTINGS.height, 0.1, 1000000 );
+renderer = new THREE.WebGLRenderer({ antialias : SETTINGS.antialias, canvas: container });
 
 renderer.setPixelRatio( window.devicePixelRatio );
 renderer.setSize( SETTINGS.width , SETTINGS.height);
 
-//CUBE
-let geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
-let material = new THREE.MeshBasicMaterial( {color: 0x00f2ff} );
-let cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
+var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
+scene.add( ambientLight );
+	var controls = new OrbitControls( camera, renderer.domElement );
+  var pointLight = new THREE.PointLight( 0xffffff, 0.8 );
+camera.add( pointLight );
+scene.add(camera);
 
-//CAMERA
-camera.position.z = 2.5;
+//CUBE
+let cube = new Cube();
+scene.add( cube.object );
+
+// let model = new Model("../assets/models/yaeji.fbx", scene);
+
+let loader = new FBXLoader();
+loader.load( '../assets/models/yaeji.fbx',
+function ( object ) {
+  var box = new THREE.Box3().setFromObject( object );
+  var center = new THREE.Vector3();
+  box.getCenter( center );
+  object.position.sub( center );
+
+  scene.add( object );
+  console.log();
+},
+// called when loading is in progresses
+function ( xhr ) {
+
+  console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+},
+// called when loading has errors
+function ( error ) {
+
+  console.log( 'An error happened' );
+
+}
+
+);
 
 //POST PROCESSING
-let params = {
+params = {
   pixelSize: 8,
   postprocessing: true
 };
 
-let composer = new EffectComposer( renderer );
+composer = new EffectComposer( renderer );
 composer.addPass( new RenderPass( scene, camera ) );
 
-let pixelPass = new ShaderPass( PixelFlow );
+pixelPass = new ShaderPass( PixelFlow );
 pixelPass.uniforms[ "resolution" ].value = new THREE.Vector2( window.innerWidth, window.innerHeight );
 pixelPass.uniforms[ "resolution" ].value.multiplyScalar( window.devicePixelRatio );
 pixelPass.uniforms[ "pixelSize" ].value = params.pixelSize;
 composer.addPass( pixelPass );
 
 //GUI
-
+gui = new GUI();
+gui.add( params, 'pixelSize' ).min( 2 ).max( 32 ).step( 2 );
+gui.add( params, 'postprocessing' );
 
 //CALLED ONLY ONCE
 function Init()
 {
+  //CAMERA
+  // camera.position.z = 2.5;
+  camera.position.set(0,0,1.5); camera.lookAt(scene.position);
+
+}
+
+function UpdateGUI() {
+
+  pixelPass.uniforms[ "pixelSize" ].value = params.pixelSize;
 
 }
 
 //CALLED EVERY FRAME
 function Update()
 {
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
-
+  // cube.rotation.x += 0.01;
+  // cube.rotation.y += 0.01;
+  // cube.Rotate(new THREE.Vector3(1,0,0), 0.01);
+  UpdateGUI();
 }
 
 //ANIMATE/UPDATE
