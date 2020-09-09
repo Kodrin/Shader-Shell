@@ -26,7 +26,7 @@ import * as THREE from '../lib/three/build/three.module.js';
 
 import { GUI } from '../lib/three/examples/jsm/libs/dat.gui.module.js';
 
-import { Cube } from './Cube.js';
+import * as PRIMITIVES from './Primitives.js';
 import { Model } from './Model.js';
 import { FBXLoader } from '../lib/three/examples/jsm/loaders/FBXLoader.js';
 
@@ -52,42 +52,44 @@ renderer.setSize( SETTINGS.width , SETTINGS.height);
 
 var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
 scene.add( ambientLight );
-	var controls = new OrbitControls( camera, renderer.domElement );
-  var pointLight = new THREE.PointLight( 0xffffff, 0.8 );
+var controls = new OrbitControls( camera, renderer.domElement );
+var pointLight = new THREE.PointLight( 0xffffff, 0.8 );
 camera.add( pointLight );
 scene.add(camera);
 
 //CUBE
-let cube = new Cube();
-scene.add( cube.object );
+let sphere = new PRIMITIVES.Sphere();
+let cube = new PRIMITIVES.Cube();
+// scene.add( cube.object );
+scene.add(sphere.object);
 
 // let model = new Model("../assets/models/yaeji.fbx", scene);
 
-let loader = new FBXLoader();
-loader.load( '../assets/models/yaeji.fbx',
-function ( object ) {
-  var box = new THREE.Box3().setFromObject( object );
-  var center = new THREE.Vector3();
-  box.getCenter( center );
-  object.position.sub( center );
-
-  scene.add( object );
-  console.log();
-},
-// called when loading is in progresses
-function ( xhr ) {
-
-  console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-
-},
-// called when loading has errors
-function ( error ) {
-
-  console.log( 'An error happened' );
-
-}
-
-);
+// let loader = new FBXLoader();
+// loader.load( '../assets/models/yaeji.fbx',
+// function ( object ) {
+//   var box = new THREE.Box3().setFromObject( object );
+//   var center = new THREE.Vector3();
+//   box.getCenter( center );
+//   object.position.sub( center );
+//
+//   scene.add( object );
+//   console.log();
+// },
+// // called when loading is in progresses
+// function ( xhr ) {
+//
+//   console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+//
+// },
+// // called when loading has errors
+// function ( error ) {
+//
+//   console.log( 'An error happened' );
+//
+// }
+//
+// );
 
 //POST PROCESSING
 params = {
