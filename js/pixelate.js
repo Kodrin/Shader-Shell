@@ -1,3 +1,23 @@
+//LIBRARIES
+import * as THREE from '../lib/three/build/three.module.js';
+
+import { GUI } from '../lib/three/examples/jsm/libs/dat.gui.module.js';
+
+import * as PRIMITIVES from './Primitives.js';
+import { Model } from './Model.js';
+import { FBXLoader } from '../lib/three/examples/jsm/loaders/FBXLoader.js';
+
+
+import { OrbitControls } from '../lib/three/examples/jsm/controls/OrbitControls.js';
+import { EffectComposer } from '../lib/three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from '../lib/three/examples/jsm/postprocessing/RenderPass.js';
+import { ShaderPass } from '../lib/three/examples/jsm/postprocessing/ShaderPass.js';
+import { PixelShader } from '../lib/three/examples/jsm/shaders/PixelShader.js';
+import { PixelFlow } from '../shaders/PixelFlow.js';
+import { NormalMapShader } from '../lib/three/examples/jsm/shaders/NormalMapShader.js';
+
+
+
 //GLOBAL
 let THREEPATH = '../lib/three';
 
@@ -21,22 +41,6 @@ let GUISETTINGS
   show : true
 };
 
-//LIBRARIES
-import * as THREE from '../lib/three/build/three.module.js';
-
-import { GUI } from '../lib/three/examples/jsm/libs/dat.gui.module.js';
-
-import * as PRIMITIVES from './Primitives.js';
-import { Model } from './Model.js';
-import { FBXLoader } from '../lib/three/examples/jsm/loaders/FBXLoader.js';
-
-
-import { OrbitControls } from '../lib/three/examples/jsm/controls/OrbitControls.js';
-import { EffectComposer } from '../lib/three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from '../lib/three/examples/jsm/postprocessing/RenderPass.js';
-import { ShaderPass } from '../lib/three/examples/jsm/postprocessing/ShaderPass.js';
-import { PixelShader } from '../lib/three/examples/jsm/shaders/PixelShader.js';
-import { PixelFlow } from '../shaders/PixelFlow.js';
 
 let container, scene, camera, renderer, gui;
 let composer, pixelPass, params;
@@ -60,13 +64,19 @@ scene.add(camera);
 //CUBE
 let sphere = new PRIMITIVES.Sphere();
 let cube = new PRIMITIVES.Cube();
-// scene.add( cube.object );
-scene.add(sphere.object);
 
+let fresnel = NormalMapShader;
+let cubeShader = new PRIMITIVES.CubeShader(new THREE.Vector3(1,1,1), fresnel);
+// scene.add( cube.object );
+// scene.add(sphere.object);
+scene.add(cubeShader.object);
 // let model = new Model("../assets/models/yaeji.fbx", scene);
 
+let model = new Model('../assets/models/TatamiFloor.fbx', scene);
+model.Load('../assets/models/TatamiFloor.fbx', scene);
+// scene.add(model.object);
 // let loader = new FBXLoader();
-// loader.load( '../assets/models/yaeji.fbx',
+// loader.load( '../assets/models/TatamiFloor.fbx',
 // function ( object ) {
 //   var box = new THREE.Box3().setFromObject( object );
 //   var center = new THREE.Vector3();
@@ -94,7 +104,7 @@ scene.add(sphere.object);
 //POST PROCESSING
 params = {
   pixelSize: 8,
-  postprocessing: true
+  postprocessing: false
 };
 
 composer = new EffectComposer( renderer );
@@ -116,7 +126,7 @@ function Init()
 {
   //CAMERA
   // camera.position.z = 2.5;
-  camera.position.set(0,0,1.5); camera.lookAt(scene.position);
+  camera.position.set(0,50,500); camera.lookAt(scene.position);
 
 }
 

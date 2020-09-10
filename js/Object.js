@@ -3,10 +3,10 @@ import * as THREE from '../lib/three/build/three.module.js';
 
 class Object
 {
-  constructor(color = 0x00f2ff)
+  constructor()
   {
     this.geometry = new THREE.BufferGeometry();
-    this.material = new THREE.MeshBasicMaterial( {color: color} );
+    this.material = new THREE.MeshBasicMaterial( {color: 0x00f2ff} );
     this.object = new THREE.Mesh( this.geometry, this.material );
     // this.Init(this.object);
   }
