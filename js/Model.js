@@ -2,56 +2,37 @@ import * as THREE from '../lib/three/build/three.module.js';
 import { Object } from './Object.js';
 import { FBXLoader } from '../lib/three/examples/jsm/loaders/FBXLoader.js';
 
-class Model extends Object
+class Model
 {
-  material = new THREE.MeshBasicMaterial();
-  object;
+  // material = new THREE.MeshBasicMaterial();
+  model = new THREE.Mesh();
 
-  constructor(path, scene)
+  constructor(path)
   {
-    super();
-    // this.box;
-    // this.center;
-    // this.material;
-    // this.object;
+    this.path = path;
+    this.geometry = new THREE.BoxBufferGeometry( 1,1,1 );
+    this.material = new THREE.MeshBasicMaterial( {color: 0x00f2ff} );
+    // this.model;
     // this.Load(path, scene);
   }
 
-  Load(path, scene)
+  Load(path)
   {
     let loader = new FBXLoader();
-    loader.load( path, function ( object )
-    {
+    loader.load(
+      path,
 
-      // if(shader == null)
-      // {
-        // this.material = new THREE.MeshBasicMaterial();
-        // this.object = new THREE.Mesh(obj, this.material);
-        // this.object = object;
-        // this.box = new THREE.Box3().setFromObject( this.object );
-        // this.center = new THREE.Vector3();
-        // this.box.getCenter( this.center );
-        // this.object.position.sub( this.center );
-      // }
+      function(object)
+      {
+        this.model = new THREE.Mesh(object);
+      }
+    );
+  }
 
-      scene.add( object );
-
-    },
-
-    // called when loading is in progresses
-    function ( xhr ) {
-
-      console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-
-    },
-    // called when loading has errors
-    function ( error ) {
-
-      console.log( 'An error happened' );
-      console.log(error);
-    }
-
-  );
+  AssignModel( geometry, materials )
+  {
+  	// let material = new THREE.MeshFaceMaterial( materials );
+  	// this.model.geometry = geometry;
   }
 }
 

@@ -13,9 +13,9 @@ class Object
 
   Init(object)
   {
-    object.position.x = 0;
-    object.position.y = 0;
-    object.position.z = 0;
+    this.object.position.x = 0;
+    this.object.position.y = 0;
+    this.object.position.z = 0;
   }
 
   Move(direction = new THREE.Vector3(0,0,0), speed = 1)

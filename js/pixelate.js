@@ -1,80 +1,87 @@
-//LIBRARIES
+//THREE JS
 import * as THREE from '../lib/three/build/three.module.js';
-
 import { GUI } from '../lib/three/examples/jsm/libs/dat.gui.module.js';
-
-import * as PRIMITIVES from './Primitives.js';
-import { Model } from './Model.js';
 import { FBXLoader } from '../lib/three/examples/jsm/loaders/FBXLoader.js';
-
-
 import { OrbitControls } from '../lib/three/examples/jsm/controls/OrbitControls.js';
 import { EffectComposer } from '../lib/three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from '../lib/three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from '../lib/three/examples/jsm/postprocessing/ShaderPass.js';
 import { PixelShader } from '../lib/three/examples/jsm/shaders/PixelShader.js';
-import { PixelFlow } from '../shaders/PixelFlow.js';
 import { NormalMapShader } from '../lib/three/examples/jsm/shaders/NormalMapShader.js';
 
+//SHADER SHELL
+import * as PRIMITIVES from './Primitives.js';
+import { Helpers } from './Helpers.js';
+import { Model } from './Model.js';
+import { PixelFlow } from '../shaders/PixelFlow.js';
 
 
 //GLOBAL
-let THREEPATH = '../lib/three';
+let THREEPATH, GENERAL_SETTINGS, CAMERA_SETTINGS, GUISETTINGS, SHADER_PARAMS;
+THREEPATH = '../lib/three';
 
-let SETTINGS =
+GENERAL_SETTINGS =
 {
   container : "canvas",
-  width : 600,
-  height : 600,
+  width : 750,
+  height : 750
+
+};
+
+CAMERA_SETTINGS =
+{
+  focal : 50,
+  near: 0.1,
+  far: 10000,
   aspect : 0.5,
   pixelRatio : 1.0,
   antialias : true
 };
 
-let CAMERASETTINGS
-{
-  focal : 50
-};
-
-let GUISETTINGS
+GUISETTINGS =
 {
   show : true
 };
 
+SHADER_PARAMS = {
+  pixelSize: 8,
+  postprocessing: false
+};
 
-let container, scene, camera, renderer, gui;
-let composer, pixelPass, params;
 
 //COMMON
-container = document.getElementById( SETTINGS.container );
+let container, scene, camera, renderer, gui;
+let composer, pixelPass;
+
+container = document.getElementById( GENERAL_SETTINGS.container );
 scene = new THREE.Scene();
-camera = new THREE.PerspectiveCamera( 75, SETTINGS.width / SETTINGS.height, 0.1, 1000000 );
-renderer = new THREE.WebGLRenderer({ antialias : SETTINGS.antialias, canvas: container });
+camera = new THREE.PerspectiveCamera( 75, GENERAL_SETTINGS.width / GENERAL_SETTINGS.height, 0.1, 1000000 );
+renderer = new THREE.WebGLRenderer({ antialias : CAMERA_SETTINGS.antialias, canvas: container });
 
 renderer.setPixelRatio( window.devicePixelRatio );
-renderer.setSize( SETTINGS.width , SETTINGS.height);
+renderer.setSize( GENERAL_SETTINGS.width , GENERAL_SETTINGS.height);
 
-var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
-scene.add( ambientLight );
+//HELPERS
+let helpers = new Helpers();
+helpers.AddToScene(scene);
+
+//LIGHTING
+var ambientLight = new THREE.AmbientLight( 0xcccccc, 1.4 );
 var controls = new OrbitControls( camera, renderer.domElement );
 var pointLight = new THREE.PointLight( 0xffffff, 0.8 );
-camera.add( pointLight );
+// camera.add( pointLight );
+scene.add( ambientLight );
 scene.add(camera);
 
 //CUBE
-let sphere = new PRIMITIVES.Sphere();
-let cube = new PRIMITIVES.Cube();
-
+// let sphere = new PRIMITIVES.Sphere();
+// let cube = new PRIMITIVES.Cube();
+//
 let fresnel = NormalMapShader;
-let cubeShader = new PRIMITIVES.CubeShader(new THREE.Vector3(1,1,1), fresnel);
-// scene.add( cube.object );
-// scene.add(sphere.object);
+let cubeShader = new PRIMITIVES.CubeShader(new THREE.Vector3(100,100,100), fresnel);
 scene.add(cubeShader.object);
-// let model = new Model("../assets/models/yaeji.fbx", scene);
 
-let model = new Model('../assets/models/TatamiFloor.fbx', scene);
-model.Load('../assets/models/TatamiFloor.fbx', scene);
-// scene.add(model.object);
+
 // let loader = new FBXLoader();
 // loader.load( '../assets/models/TatamiFloor.fbx',
 // function ( object ) {
@@ -101,47 +108,39 @@ model.Load('../assets/models/TatamiFloor.fbx', scene);
 //
 // );
 
-//POST PROCESSING
-params = {
-  pixelSize: 8,
-  postprocessing: false
-};
-
+//POST PROCESSING (IMAGE EFFECT)
 composer = new EffectComposer( renderer );
 composer.addPass( new RenderPass( scene, camera ) );
 
 pixelPass = new ShaderPass( PixelFlow );
 pixelPass.uniforms[ "resolution" ].value = new THREE.Vector2( window.innerWidth, window.innerHeight );
 pixelPass.uniforms[ "resolution" ].value.multiplyScalar( window.devicePixelRatio );
-pixelPass.uniforms[ "pixelSize" ].value = params.pixelSize;
+pixelPass.uniforms[ "pixelSize" ].value = SHADER_PARAMS.pixelSize;
 composer.addPass( pixelPass );
 
 //GUI
 gui = new GUI();
-gui.add( params, 'pixelSize' ).min( 2 ).max( 32 ).step( 2 );
-gui.add( params, 'postprocessing' );
+gui.add( SHADER_PARAMS, 'pixelSize' ).min( 2 ).max( 32 ).step( 2 );
+gui.add( SHADER_PARAMS, 'postprocessing' );
+// gui.add( helpers, 'ToggleAxes' );
+helpers.BindToGUI(gui);
 
 //CALLED ONLY ONCE
 function Init()
 {
   //CAMERA
-  // camera.position.z = 2.5;
-  camera.position.set(0,50,500); camera.lookAt(scene.position);
-
+  camera.position.set(250,250,250);
+  camera.lookAt(scene.position);
 }
 
-function UpdateGUI() {
-
-  pixelPass.uniforms[ "pixelSize" ].value = params.pixelSize;
-
+function UpdateGUI()
+{
+  pixelPass.uniforms[ "pixelSize" ].value = SHADER_PARAMS.pixelSize;
 }
 
 //CALLED EVERY FRAME
 function Update()
 {
-  // cube.rotation.x += 0.01;
-  // cube.rotation.y += 0.01;
-  // cube.Rotate(new THREE.Vector3(1,0,0), 0.01);
   UpdateGUI();
 }
 
@@ -149,7 +148,7 @@ function Update()
 function Animate() {
   Update();
 
-  if ( params.postprocessing )
+  if ( SHADER_PARAMS.postprocessing )
   {
     composer.render();
   }
