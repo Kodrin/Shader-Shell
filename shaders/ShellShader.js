@@ -1,28 +1,32 @@
 // TO BE CONTINUED
-import { ShaderMaterial } from '../lib/three/build/three.module.js';
+import * as THREE from '../lib/three/build/three.module.js';
 
 class ShellShader
 {
   //UNIFORMS
-  tDiffuse = null;
-  resolution = null;
-  pixelSize = 1.0;
-  flowScale = 1.0;
+  // baseTexture = null;
+
+  uniforms =
+  {
+    "baseTexture": { value: null }
+  };
+
+  shaderMaterial = null;
 
   constructor()
   {
-
+    this.shaderMaterial = new THREE.ShaderMaterial({
+      uniforms: this.uniforms,
+      vertexShader: this.VertexPass(),
+      fragmentShader: this.FragmentPass()
+    });
   }
 
-  Uniforms()
-  {
 
-  }
-
+  //PASSES
   VertexPass()
   {
-    return
-    `
+    return `
     varying highp vec2 vUv;
 
     void main()
@@ -35,31 +39,29 @@ class ShellShader
 
   GeometryPass()
   {
-    return
-    `
+    return `
     `;
   }
 
   FragmentPass()
   {
-    return
-    `
-    uniform float height;
-		uniform vec2 resolution;
-		uniform sampler2D heightMap;
+    return `
+    uniform sampler2D baseTexture;
 
-		varying vec2 vUv;
+    varying vec2 vUv;
 
-		void main()
+    void main()
     {
-			float val = texture2D( heightMap, vUv ).x;
-
-			float valU = texture2D( heightMap, vUv + vec2( 1.0 / resolution.x, 0.0 ) ).x;
-			float valV = texture2D( heightMap, vUv + vec2( 0.0, 1.0 / resolution.y ) ).x;
-
-			gl_FragColor = vec4( ( 0.5 * normalize( vec3( val - valU, val - valV, height  ) ) + 0.5 ), 1.0 );
-		}
+        gl_FragColor = texture2D(baseTexture, vUv); // Displays Nothing
+        //gl_FragColor = vec4(0.5, 0.2, 1.0, 1.0); // Works; Displays Flat Color
+    }
     `;
+  }
+
+  //UTILITIES
+  BindToGUI(gui)
+  {
+
   }
 
 }

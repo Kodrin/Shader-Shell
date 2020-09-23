@@ -13,6 +13,10 @@ import { NormalMapShader } from '../lib/three/examples/jsm/shaders/NormalMapShad
 import * as PRIMITIVES from './Primitives.js';
 import { Helpers } from './Helpers.js';
 import { Model } from './Model.js';
+
+//SHADERS
+import { ShellShader } from '../shaders/ShellShader.js';
+import { BasicDiffuse } from '../shaders/BasicDiffuse.js';
 import { PixelFlow } from '../shaders/PixelFlow.js';
 
 
@@ -71,17 +75,27 @@ var controls = new OrbitControls( camera, renderer.domElement );
 var pointLight = new THREE.PointLight( 0xffffff, 0.8 );
 // camera.add( pointLight );
 scene.add( ambientLight );
-scene.add(camera);
+scene.add( camera );
 
 //CUBE
 // let sphere = new PRIMITIVES.Sphere();
 // let cube = new PRIMITIVES.Cube();
 //
-let fresnel = NormalMapShader;
-let cubeShader = new PRIMITIVES.CubeShader(new THREE.Vector3(100,100,100), fresnel);
-scene.add(cubeShader.object);
+let basicDiffuse = BasicDiffuse;
+let cubeShader = new PRIMITIVES.CubeShader(new THREE.Vector3(100,100,100), basicDiffuse);
+let tatamiTexture = THREE.ImageUtils.loadTexture('../assets/models/Tatami.jpg');
+basicDiffuse.uniforms["baseTexture"].value = tatamiTexture;
+// console.log(basicDiffuse.uniforms["baseTexture"].value);
+// scene.add(cubeShader.object);
 
+let shellShader = new ShellShader();
+shellShader.uniforms["baseTexture"].value = tatamiTexture;
 
+let ball = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100), shellShader.shaderMaterial);
+scene.add(ball);
+console.log(shellShader.uniforms);
+
+// console.log(tatamiTexture.image);
 // let loader = new FBXLoader();
 // loader.load( '../assets/models/TatamiFloor.fbx',
 // function ( object ) {
