@@ -34,6 +34,11 @@ class Helpers
     gui.add( this, 'ToggleAxes' );
     gui.add( this, 'ToggleGrid' );
   }
+
+  UpdateGUI()
+  {
+    
+  }
 }
 
 export { Helpers };

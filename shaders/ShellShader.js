@@ -6,6 +6,11 @@ class ShellShader
   //UNIFORMS
   // baseTexture = null;
 
+  PROPERTIES =
+  {
+
+  };
+
   uniforms =
   {
     "baseTexture": { value: null }
@@ -62,6 +67,15 @@ class ShellShader
   BindToGUI(gui)
   {
 
+  }
+
+  UpdateGUI()
+  {
+    const properties = Object.entries(this.PROPERTIES);
+    for (const [property, value] of properties)
+    {
+      this.uniforms[`${property}`].value = value;
+    }
   }
 
 }

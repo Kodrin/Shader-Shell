@@ -16,6 +16,7 @@ import { Model } from './Model.js';
 
 //SHADERS
 import { ShellShader } from '../shaders/ShellShader.js';
+import { ColorPrecision } from '../shaders/ColorPrecision.js';
 import { BasicDiffuse } from '../shaders/BasicDiffuse.js';
 import { PixelFlow } from '../shaders/PixelFlow.js';
 
@@ -81,19 +82,23 @@ scene.add( camera );
 // let sphere = new PRIMITIVES.Sphere();
 // let cube = new PRIMITIVES.Cube();
 //
-let basicDiffuse = BasicDiffuse;
+let basicDiffuse = PixelFlow;
 let cubeShader = new PRIMITIVES.CubeShader(new THREE.Vector3(100,100,100), basicDiffuse);
 let tatamiTexture = THREE.ImageUtils.loadTexture('../assets/models/Tatami.jpg');
-basicDiffuse.uniforms["baseTexture"].value = tatamiTexture;
+//basicDiffuse.uniforms["baseTexture"].value = tatamiTexture;
 // console.log(basicDiffuse.uniforms["baseTexture"].value);
 // scene.add(cubeShader.object);
 
 let shellShader = new ShellShader();
 shellShader.uniforms["baseTexture"].value = tatamiTexture;
 
-let ball = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100), shellShader.shaderMaterial);
+let colorPrecision = new ColorPrecision();
+colorPrecision.uniforms["baseTexture"].value = tatamiTexture;
+
+let ball = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100), colorPrecision.shaderMaterial);
 scene.add(ball);
-console.log(shellShader.uniforms);
+// console.log(basicDiffuse.uniforms);
+console.log(colorPrecision.FragmentPass());
 
 // console.log(tatamiTexture.image);
 // let loader = new FBXLoader();
@@ -138,6 +143,7 @@ gui.add( SHADER_PARAMS, 'pixelSize' ).min( 2 ).max( 32 ).step( 2 );
 gui.add( SHADER_PARAMS, 'postprocessing' );
 // gui.add( helpers, 'ToggleAxes' );
 helpers.BindToGUI(gui);
+colorPrecision.BindToGUI(gui);
 
 //CALLED ONLY ONCE
 function Init()
@@ -150,6 +156,7 @@ function Init()
 function UpdateGUI()
 {
   pixelPass.uniforms[ "pixelSize" ].value = SHADER_PARAMS.pixelSize;
+  colorPrecision.UpdateGUI();
 }
 
 //CALLED EVERY FRAME
