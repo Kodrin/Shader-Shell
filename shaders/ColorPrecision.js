@@ -2,7 +2,7 @@
 import * as THREE from '../lib/three/build/three.module.js';
 import { GUI } from '../lib/three/examples/jsm/libs/dat.gui.module.js';
 import { ShellShader } from './ShellShader.js';
-import { IncludeBase } from './cginclude/IncludeBase.js'
+import { IncludeBase } from './cginclude/IncludeBase.js';
 
 
 class ColorPrecision extends ShellShader

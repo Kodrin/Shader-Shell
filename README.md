@@ -13,7 +13,8 @@ Just a window where I can code some shaders.....
 1. Folder Structure
 2. ~~GLSL Support/Parsing (JSON format is disgusting)~~
 3. ~~CG include files parsed into strings~~
-4. Find a way to parse shader structure back into Three js shader for post processing compatibility
+4. ~~Find a way to parse shader structure back into Three js shader for post processing compatibility~~
+5. Parsing to GLSL file
 
 **Structs:**
 1. ~~Spheres~~

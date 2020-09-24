@@ -1,19 +1,23 @@
-// TO BE CONTINUED
 import * as THREE from '../lib/three/build/three.module.js';
+import { ShaderPass } from '../lib/three/examples/jsm/postprocessing/ShaderPass.js';
 
-class ShellShader
+//IMPLEMENTATION OF POST PROCESSING EFFECTS
+class ShellPostProcess
 {
+
   //UNIFORMS
-  // baseTexture = null;
+  // tDiffuse = null;
 
   PROPERTIES =
   {
-
+    grayscale : 1.0
   };
 
   uniforms =
   {
-    "baseTexture": { value: null }
+    "tDiffuse": { value: null },
+    "resolution": { value: null },
+    "grayscale": { value: 1.0 }
   };
 
   shaderMaterial = null;
@@ -25,6 +29,7 @@ class ShellShader
       vertexShader: this.VertexPass(),
       fragmentShader: this.FragmentPass()
     });
+    this.shaderPass = new ShaderPass(this.ParseToThree());
   }
 
 
@@ -51,14 +56,15 @@ class ShellShader
   FragmentPass()
   {
     return `
-    uniform sampler2D baseTexture;
+    uniform sampler2D tDiffuse;
+    uniform float grayscale;
 
     varying vec2 vUv;
 
     void main()
     {
-        gl_FragColor = texture2D(baseTexture, vUv); // Displays Nothing
-        //gl_FragColor = vec4(0.5, 0.2, 1.0, 1.0); // Works; Displays Flat Color
+        vec4 base = texture2D(tDiffuse, vUv); // Displays Nothing
+        gl_FragColor = base + vec4(0.5, 0.2, 1.0, 1.0) * grayscale; // Works; Displays Flat Color
     }
     `;
   }
@@ -81,10 +87,20 @@ class ShellShader
   //UTILITIES
   BindToGUI(gui)
   {
-
+    gui.add(this.PROPERTIES, 'grayscale').min( 0.0 ).max( 1.0 ).step( 0.01 );
   }
 
   UpdateGUI()
+  {
+    const properties = Object.entries(this.PROPERTIES);
+    for (const [property, value] of properties)
+    {
+      this.uniforms[`${property}`].value = value;
+      this.shaderPass.uniforms[`${property}`].value = value;
+    }
+  }
+
+  UpdatePassParams()
   {
     const properties = Object.entries(this.PROPERTIES);
     for (const [property, value] of properties)
@@ -95,4 +111,4 @@ class ShellShader
 
 }
 
-export { ShellShader };
+export { ShellPostProcess };

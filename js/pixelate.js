@@ -19,6 +19,10 @@ import { ShellShader } from '../shaders/ShellShader.js';
 import { ColorPrecision } from '../shaders/ColorPrecision.js';
 import { BasicDiffuse } from '../shaders/BasicDiffuse.js';
 import { PixelFlow } from '../shaders/PixelFlow.js';
+import { PixelateEffect } from '../shaders/PixelateEffect.js';
+import { ShellPostProcess } from '../shaders/ShellPostProcess.js';
+
+
 
 
 //GLOBAL
@@ -98,8 +102,8 @@ colorPrecision.uniforms["baseTexture"].value = tatamiTexture;
 let ball = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100), colorPrecision.shaderMaterial);
 scene.add(ball);
 // console.log(basicDiffuse.uniforms);
-console.log(colorPrecision.FragmentPass());
-
+// console.log(colorPrecision.FragmentPass());
+console.log(colorPrecision.ParseToThree());
 // console.log(tatamiTexture.image);
 // let loader = new FBXLoader();
 // loader.load( '../assets/models/TatamiFloor.fbx',
@@ -131,18 +135,23 @@ console.log(colorPrecision.FragmentPass());
 composer = new EffectComposer( renderer );
 composer.addPass( new RenderPass( scene, camera ) );
 
-pixelPass = new ShaderPass( PixelFlow );
+let pixelate = new PixelateEffect();
+pixelPass = new ShaderPass( pixelate.ParseToThree() );
 pixelPass.uniforms[ "resolution" ].value = new THREE.Vector2( window.innerWidth, window.innerHeight );
 pixelPass.uniforms[ "resolution" ].value.multiplyScalar( window.devicePixelRatio );
 pixelPass.uniforms[ "pixelSize" ].value = SHADER_PARAMS.pixelSize;
-composer.addPass( pixelPass );
+
+let screenShader = new ShellPostProcess();
+composer.addPass( screenShader.shaderPass );
 
 //GUI
 gui = new GUI();
-gui.add( SHADER_PARAMS, 'pixelSize' ).min( 2 ).max( 32 ).step( 2 );
-gui.add( SHADER_PARAMS, 'postprocessing' );
+// gui.add( SHADER_PARAMS, 'pixelSize' ).min( 2 ).max( 32 ).step( 2 );
+// gui.add( SHADER_PARAMS, 'postprocessing' );
 // gui.add( helpers, 'ToggleAxes' );
+
 helpers.BindToGUI(gui);
+screenShader.BindToGUI(gui);
 colorPrecision.BindToGUI(gui);
 
 //CALLED ONLY ONCE
@@ -157,6 +166,7 @@ function UpdateGUI()
 {
   pixelPass.uniforms[ "pixelSize" ].value = SHADER_PARAMS.pixelSize;
   colorPrecision.UpdateGUI();
+  screenShader.UpdateGUI();
 }
 
 //CALLED EVERY FRAME
@@ -169,7 +179,7 @@ function Update()
 function Animate() {
   Update();
 
-  if ( SHADER_PARAMS.postprocessing )
+  if ( true )
   {
     composer.render();
   }
