@@ -6,7 +6,7 @@
 */
 
 class IncludeBase
-{
+{  
   //call it whatever
   static Include()
   {
@@ -15,12 +15,6 @@ class IncludeBase
       //this is an include file
       //ITS WORKING!!!
     `;
-  }
-
-
-  static IncludeNoise()
-  {
-
   }
 }
 
