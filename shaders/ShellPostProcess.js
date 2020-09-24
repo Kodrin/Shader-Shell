@@ -87,7 +87,8 @@ class ShellPostProcess
   //UTILITIES
   BindToGUI(gui)
   {
-    gui.add(this.PROPERTIES, 'grayscale').min( 0.0 ).max( 1.0 ).step( 0.01 );
+    let folder = gui.addFolder('ShellPostProcess');
+    folder.add(this.PROPERTIES, 'grayscale').min( 0.0 ).max( 1.0 ).step( 0.01 );
   }
 
   UpdateGUI()
@@ -97,15 +98,6 @@ class ShellPostProcess
     {
       this.uniforms[`${property}`].value = value;
       this.shaderPass.uniforms[`${property}`].value = value;
-    }
-  }
-
-  UpdatePassParams()
-  {
-    const properties = Object.entries(this.PROPERTIES);
-    for (const [property, value] of properties)
-    {
-      this.uniforms[`${property}`].value = value;
     }
   }
 

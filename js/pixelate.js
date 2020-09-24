@@ -134,23 +134,17 @@ console.log(colorPrecision.ParseToThree());
 //POST PROCESSING (IMAGE EFFECT)
 composer = new EffectComposer( renderer );
 composer.addPass( new RenderPass( scene, camera ) );
-
-let pixelate = new PixelateEffect();
-pixelPass = new ShaderPass( pixelate.ParseToThree() );
-pixelPass.uniforms[ "resolution" ].value = new THREE.Vector2( window.innerWidth, window.innerHeight );
-pixelPass.uniforms[ "resolution" ].value.multiplyScalar( window.devicePixelRatio );
-pixelPass.uniforms[ "pixelSize" ].value = SHADER_PARAMS.pixelSize;
-
+let pixelate = new PixelateEffect(window);
+// composer.addPass( pixelate.shaderPass );
 let screenShader = new ShellPostProcess();
-composer.addPass( screenShader.shaderPass );
+// composer.addPass( screenShader.shaderPass );
 
 //GUI
-gui = new GUI();
-// gui.add( SHADER_PARAMS, 'pixelSize' ).min( 2 ).max( 32 ).step( 2 );
-// gui.add( SHADER_PARAMS, 'postprocessing' );
-// gui.add( helpers, 'ToggleAxes' );
+gui = new GUI({name: 'Shader Params'});
 
+//BINDING INITIALIZES THE SLIDERS!
 helpers.BindToGUI(gui);
+pixelate.BindToGUI(gui);
 screenShader.BindToGUI(gui);
 colorPrecision.BindToGUI(gui);
 
@@ -164,9 +158,9 @@ function Init()
 
 function UpdateGUI()
 {
-  pixelPass.uniforms[ "pixelSize" ].value = SHADER_PARAMS.pixelSize;
   colorPrecision.UpdateGUI();
   screenShader.UpdateGUI();
+  pixelate.UpdateGUI();
 }
 
 //CALLED EVERY FRAME
@@ -175,10 +169,8 @@ function Update()
   UpdateGUI();
 }
 
-//ANIMATE/UPDATE
-function Animate() {
-  Update();
-
+function Render()
+{
   if ( true )
   {
     composer.render();
@@ -187,7 +179,12 @@ function Animate() {
   {
     renderer.render( scene, camera );
   }
+}
 
+//ANIMATE/UPDATE
+function Animate() {
+  Update();
+  Render();
   requestAnimationFrame( Animate );
 }
 

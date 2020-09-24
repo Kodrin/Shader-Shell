@@ -53,7 +53,8 @@ class ColorPrecision extends ShellShader
   BindToGUI(gui)
   {
     //customize what type of sliders u want here!!
-    gui.add(this.PROPERTIES, 'colorPrecision').min( 0.5 ).max( 16 ).step( 0.01 );
+    let folder = gui.addFolder('Color Precision');
+    folder.add(this.PROPERTIES, 'colorPrecision').min( 0.5 ).max( 16 ).step( 0.01 );
   }
 
   // UpdateGUI()

@@ -1,11 +1,11 @@
 // TO BE CONTINUED
 import * as THREE from '../lib/three/build/three.module.js';
-import { GUI } from '../lib/three/examples/jsm/libs/dat.gui.module.js';
-import { ShellShader } from './ShellShader.js';
+import { ShaderPass } from '../lib/three/examples/jsm/postprocessing/ShaderPass.js';
+import { ShellPostProcess } from './ShellPostProcess.js';
 import { NoiseInclude } from './cginclude/NoiseInclude.js'
 
 
-class PixelateEffect extends ShellShader
+class PixelateEffect extends ShellPostProcess
 {
   PROPERTIES =
   {
@@ -23,7 +23,7 @@ class PixelateEffect extends ShellShader
 		"flowScale": { value: 1. }
   };
 
-  constructor()
+  constructor(window)
   {
     super();
     this.shaderMaterial = new THREE.ShaderMaterial({
@@ -31,6 +31,11 @@ class PixelateEffect extends ShellShader
       vertexShader: this.VertexPass(),
       fragmentShader: this.FragmentPass()
     });
+    this.shaderPass = new ShaderPass(this.ParseToThree());
+
+    //INITIALIZING VALUES
+    this.shaderPass.uniforms[ "resolution" ].value = new THREE.Vector2( window.innerWidth, window.innerHeight );
+    this.shaderPass.uniforms[ "resolution" ].value.multiplyScalar( window.devicePixelRatio );
   }
 
   VertexPass()
@@ -97,7 +102,8 @@ class PixelateEffect extends ShellShader
   BindToGUI(gui)
   {
     //customize what type of sliders u want here!!
-    gui.add(this.PROPERTIES, 'pixelSize').min( 0.5 ).max( 16 ).step( 0.01 );
+    let folder = gui.addFolder('Pixelation Effect');
+    folder.add(this.PROPERTIES, 'pixelSize').min( 0.5 ).max( 16 ).step( 0.01 );
     // gui.add(this.PROPERTIES, 'pixelSize').min( 0.5 ).max( 16 ).step( 0.01 );
   }
 

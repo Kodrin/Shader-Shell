@@ -31,13 +31,14 @@ class Helpers
   //using dat.gui.module.js
   BindToGUI(gui)
   {
-    gui.add( this, 'ToggleAxes' );
-    gui.add( this, 'ToggleGrid' );
+    let folder = gui.addFolder('Helpers');
+    folder.add( this, 'ToggleAxes' );
+    folder.add( this, 'ToggleGrid' );
   }
 
   UpdateGUI()
   {
-    
+
   }
 }
 
