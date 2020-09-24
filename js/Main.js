@@ -5,9 +5,6 @@ import { FBXLoader } from '../lib/three/examples/jsm/loaders/FBXLoader.js';
 import { OrbitControls } from '../lib/three/examples/jsm/controls/OrbitControls.js';
 import { EffectComposer } from '../lib/three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from '../lib/three/examples/jsm/postprocessing/RenderPass.js';
-import { ShaderPass } from '../lib/three/examples/jsm/postprocessing/ShaderPass.js';
-import { PixelShader } from '../lib/three/examples/jsm/shaders/PixelShader.js';
-import { NormalMapShader } from '../lib/three/examples/jsm/shaders/NormalMapShader.js';
 
 //SHADER SHELL
 import * as PRIMITIVES from './Primitives.js';
@@ -16,14 +13,10 @@ import { Model } from './Model.js';
 
 //SHADERS
 import { ShellShader } from '../shaders/ShellShader.js';
+import { ShellPostProcess } from '../shaders/ShellPostProcess.js';
 import { ColorPrecision } from '../shaders/ColorPrecision.js';
 import { BasicDiffuse } from '../shaders/BasicDiffuse.js';
-import { PixelFlow } from '../shaders/PixelFlow.js';
 import { PixelateEffect } from '../shaders/PixelateEffect.js';
-import { ShellPostProcess } from '../shaders/ShellPostProcess.js';
-
-
-
 
 //GLOBAL
 let THREEPATH, GENERAL_SETTINGS, CAMERA_SETTINGS, GUISETTINGS, SHADER_PARAMS;
@@ -39,7 +32,7 @@ GENERAL_SETTINGS =
 
 CAMERA_SETTINGS =
 {
-  focal : 50,
+  focal : 35,
   near: 0.1,
   far: 10000,
   aspect : 0.5,
@@ -64,7 +57,7 @@ let composer, pixelPass;
 
 container = document.getElementById( GENERAL_SETTINGS.container );
 scene = new THREE.Scene();
-camera = new THREE.PerspectiveCamera( 75, GENERAL_SETTINGS.width / GENERAL_SETTINGS.height, 0.1, 1000000 );
+camera = new THREE.PerspectiveCamera( CAMERA_SETTINGS.focal, GENERAL_SETTINGS.width / GENERAL_SETTINGS.height, CAMERA_SETTINGS.near, CAMERA_SETTINGS.far );
 renderer = new THREE.WebGLRenderer({ antialias : CAMERA_SETTINGS.antialias, canvas: container });
 
 renderer.setPixelRatio( window.devicePixelRatio );
@@ -75,41 +68,32 @@ let helpers = new Helpers();
 helpers.AddToScene(scene);
 
 //LIGHTING
-var ambientLight = new THREE.AmbientLight( 0xcccccc, 1.4 );
-var controls = new OrbitControls( camera, renderer.domElement );
-var pointLight = new THREE.PointLight( 0xffffff, 0.8 );
+let ambientLight = new THREE.AmbientLight( 0xcccccc, 1.4 );
+let controls = new OrbitControls( camera, renderer.domElement );
+let pointLight = new THREE.PointLight( 0xffffff, 0.8 );
 // camera.add( pointLight );
 scene.add( ambientLight );
 scene.add( camera );
 
-//CUBE
-// let sphere = new PRIMITIVES.Sphere();
-// let cube = new PRIMITIVES.Cube();
-//
-let basicDiffuse = PixelFlow;
-let cubeShader = new PRIMITIVES.CubeShader(new THREE.Vector3(100,100,100), basicDiffuse);
+//TEXTURE/SHADER
 let tatamiTexture = THREE.ImageUtils.loadTexture('../assets/models/Tatami.jpg');
-//basicDiffuse.uniforms["baseTexture"].value = tatamiTexture;
-// console.log(basicDiffuse.uniforms["baseTexture"].value);
-// scene.add(cubeShader.object);
-
 let shellShader = new ShellShader();
 shellShader.uniforms["baseTexture"].value = tatamiTexture;
 
 let colorPrecision = new ColorPrecision();
 colorPrecision.uniforms["baseTexture"].value = tatamiTexture;
 
-let ball = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100), colorPrecision.shaderMaterial);
+let ball = new THREE.Mesh(new THREE.SphereGeometry(100, 100, 100), colorPrecision.shaderMaterial);
 scene.add(ball);
 // console.log(basicDiffuse.uniforms);
 // console.log(colorPrecision.FragmentPass());
-console.log(colorPrecision.ParseToThree());
+// console.log(colorPrecision.ParseToThree());
 // console.log(tatamiTexture.image);
 // let loader = new FBXLoader();
 // loader.load( '../assets/models/TatamiFloor.fbx',
 // function ( object ) {
-//   var box = new THREE.Box3().setFromObject( object );
-//   var center = new THREE.Vector3();
+//   let box = new THREE.Box3().setFromObject( object );
+//   let center = new THREE.Vector3();
 //   box.getCenter( center );
 //   object.position.sub( center );
 //
