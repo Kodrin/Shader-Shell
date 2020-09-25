@@ -2,6 +2,7 @@
 import * as THREE from '../lib/three/build/three.module.js';
 import { GUI } from '../lib/three/examples/jsm/libs/dat.gui.module.js';
 import { FBXLoader } from '../lib/three/examples/jsm/loaders/FBXLoader.js';
+import { GLTFLoader } from '../lib/three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from '../lib/three/examples/jsm/controls/OrbitControls.js';
 import { EffectComposer } from '../lib/three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from '../lib/three/examples/jsm/postprocessing/RenderPass.js';
@@ -32,7 +33,7 @@ GENERAL_SETTINGS =
 
 CAMERA_SETTINGS =
 {
-  focal : 35,
+  focal : 60,
   near: 0.1,
   far: 10000,
   aspect : 0.5,
@@ -72,7 +73,7 @@ let ambientLight = new THREE.AmbientLight( 0xcccccc, 1.4 );
 let controls = new OrbitControls( camera, renderer.domElement );
 let pointLight = new THREE.PointLight( 0xffffff, 0.8 );
 // camera.add( pointLight );
-scene.add( ambientLight );
+// scene.add( ambientLight );
 scene.add( camera );
 
 //TEXTURE/SHADER
@@ -84,36 +85,52 @@ let colorPrecision = new ColorPrecision();
 colorPrecision.uniforms["baseTexture"].value = tatamiTexture;
 
 let ball = new THREE.Mesh(new THREE.SphereGeometry(100, 100, 100), colorPrecision.shaderMaterial);
-scene.add(ball);
-// console.log(basicDiffuse.uniforms);
-// console.log(colorPrecision.FragmentPass());
-// console.log(colorPrecision.ParseToThree());
-// console.log(tatamiTexture.image);
-// let loader = new FBXLoader();
-// loader.load( '../assets/models/TatamiFloor.fbx',
-// function ( object ) {
-//   let box = new THREE.Box3().setFromObject( object );
-//   let center = new THREE.Vector3();
-//   box.getCenter( center );
-//   object.position.sub( center );
-//
-//   scene.add( object );
-//   console.log();
-// },
-// // called when loading is in progresses
-// function ( xhr ) {
-//
-//   console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-//
-// },
-// // called when loading has errors
-// function ( error ) {
-//
-//   console.log( 'An error happened' );
-//
-// }
-//
-// );
+// scene.add(ball);
+
+//https://github.com/Adjam93/threejs-model-viewer/blob/master/js/main.js
+let materials = {
+    unlitMaterial: new THREE.MeshBasicMaterial( {color: 0x00f2ff} ),
+    basicMaterial: new THREE.MeshBasicMaterial(),
+    wireframeMaterial: new THREE.MeshPhongMaterial({
+        side: THREE.DoubleSide,
+        wireframe: true,
+        shininess: 100,
+        specular: 0x000, emissive: 0x000,
+        flatShading: false, depthWrite: true, depthTest: true
+    }),
+    phongMaterial: new THREE.MeshPhongMaterial({
+        color: 0x555555, specular: 0xffffff, shininess: 10,
+        flatShading: false, side: THREE.DoubleSide, skinning: true
+    }),
+    colorPrecision: colorPrecision.shaderMaterial
+};
+
+let loader = new FBXLoader();
+let gltfLoader = new GLTFLoader();
+
+gltfLoader.load( '../assets/models/scene.gltf', function ( gltf ) {
+
+  gltf.scene.scale.set(100,100,100);
+  console.log(gltf.asset);
+  // gltf.scene.traverse( function( child ) {
+  //     if ( child instanceof THREE.Mesh ) {
+  //         child.material = materials.colorPrecision;
+  //         // console.log(child.material);
+  //     }
+  // } );
+
+	scene.add( gltf.scene );
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
+
+let tatamiFloor = new Model('../assets/models/TatamiFloor.fbx', colorPrecision);
+tatamiFloor.Load(loader, scene, materials.colorPrecision);
+
+// console.log(tatamiFloor.material);
 
 //POST PROCESSING (IMAGE EFFECT)
 composer = new EffectComposer( renderer );
@@ -126,15 +143,16 @@ let screenShader = new ShellPostProcess();
 //GUI
 gui = new GUI({name: 'Shader Params'});
 
-//BINDING INITIALIZES THE SLIDERS!
-helpers.BindToGUI(gui);
-pixelate.BindToGUI(gui);
-screenShader.BindToGUI(gui);
-colorPrecision.BindToGUI(gui);
 
 //CALLED ONLY ONCE
 function Init()
 {
+  //BINDING INITIALIZES THE SLIDERS!
+  helpers.BindToGUI(gui);
+  pixelate.BindToGUI(gui);
+  screenShader.BindToGUI(gui);
+  colorPrecision.BindToGUI(gui);
+
   //CAMERA
   camera.position.set(250,250,250);
   camera.lookAt(scene.position);
@@ -175,3 +193,25 @@ function Animate() {
 //RUNNN
 Init();
 Animate();
+
+
+//https://stackoverflow.com/questions/16200082/assigning-materials-to-an-objloader-model-in-three-js
+
+// let modelObj;
+// loader.load( '../assets/models/TatamiFloor.fbx',
+//     function( obj ){
+//         obj.traverse( function( child ) {
+//             if ( child instanceof THREE.Mesh ) {
+//                 child.material = materials.colorPrecision;
+//             }
+//         } );
+//         modelObj = obj;
+//         scene.add( obj );
+//     },
+//     function( xhr ){
+//         console.log( (xhr.loaded / xhr.total * 100) + "% loaded")
+//     },
+//     function( err ){
+//         console.error( "Error loading 'ship.obj'")
+//     }
+// );
