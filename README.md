@@ -3,7 +3,7 @@
 ### TODO
 
 **Design**
-1. Adjustable window params
+1. ~~Adjustable window params~~
 2. Shader info
 
 **Code Design:**
@@ -23,7 +23,7 @@
 7. Static debugger class for all objects
 
 **Controls:**
-1. OrbitControls
+1. ~~OrbitControls~~
 2. Different control modes
 3. Model switching
 4. View switching (shader)
@@ -32,8 +32,11 @@
 1. ~~Helper params~~
 2. ~~Shader Params~~
 
+**Deploying**
+1. ~~Hosting at 'shadershell.codrinmihail.com'~~
+
 **Bugs**
-1. Cross-Origin Request Blocked
+1. ~~Cross-Origin Request Blocked~~
 
 ### Purpose
 I've been pretty frustrated with the lack of tools to quickly iterate shaders. Simply put, I don't want to have to write boilerplate code, install endless Dependencies or setup a custom IDE just to write basic GLSL code and preview it.
