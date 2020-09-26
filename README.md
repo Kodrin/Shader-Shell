@@ -11,7 +11,7 @@
 2. ~~GLSL Support/Parsing (JSON format is disgusting)~~
 3. ~~CG include files parsed into strings~~
 4. ~~Find a way to parse shader structure back into Three js shader for post processing compatibility~~
-5. Parsing to GLSL file
+5. Parsing to GLSL file (download glsl)
 
 **Structs:**
 1. ~~Spheres~~
@@ -21,6 +21,12 @@
 5. ~~GUI categorization~~
 6. Model / Primitives Generalization
 7. Static debugger class for all objects
+
+**Controls:**
+1. OrbitControls
+2. Different control modes
+3. Model switching
+4. View switching (shader)
 
 **UI Design**
 1. ~~Helper params~~

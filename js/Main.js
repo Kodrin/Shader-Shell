@@ -9,6 +9,7 @@ import { RenderPass } from '../lib/three/examples/jsm/postprocessing/RenderPass.
 
 //SHADER SHELL
 import * as PRIMITIVES from './Primitives.js';
+import { ShellControls } from './ShellControls.js';
 import { Helpers } from './Helpers.js';
 import { Model } from './Model.js';
 
@@ -70,7 +71,8 @@ helpers.AddToScene(scene);
 
 //LIGHTING
 let ambientLight = new THREE.AmbientLight( 0xcccccc, 1.4 );
-let controls = new OrbitControls( camera, renderer.domElement );
+// let controls = new OrbitControls( camera, renderer.domElement );
+let shellControls = new ShellControls(camera, renderer.domElement);
 let pointLight = new THREE.PointLight( 0xffffff, 0.8 );
 // camera.add( pointLight );
 // scene.add( ambientLight );
