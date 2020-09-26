@@ -91,7 +91,7 @@ let ball = new THREE.Mesh(new THREE.SphereGeometry(100, 100, 100), colorPrecisio
 let materials = {
     unlitMaterial: new THREE.MeshBasicMaterial( {color: 0x00f2ff} ),
     basicMaterial: new THREE.MeshBasicMaterial(),
-    wireframeMaterial: new THREE.MeshPhongMaterial({
+    wireframeMaterial: new THREE.MeshBasicMaterial({
         side: THREE.DoubleSide,
         wireframe: true,
         shininess: 100,
@@ -108,27 +108,36 @@ let materials = {
 let loader = new FBXLoader();
 let gltfLoader = new GLTFLoader();
 
-gltfLoader.load( '../assets/models/scene.gltf', function ( gltf ) {
+// gltfLoader.load( '../assets/models/scene.gltf', function ( gltf ) {
+//
+//   gltf.scene.scale.set(100,100,100);
+//   console.log(gltf.asset);
+//   gltf.scene.traverse( function( child ) {
+//       if ( child instanceof THREE.Mesh ) {
+//           child.material = materials.wireframeMaterial;
+//           // console.log(child.material);
+//       }
+//   } );
+//
+// 	scene.add( gltf.scene );
+//
+// }, undefined, function ( error ) {
+//
+// 	console.error( error );
+//
+// } );
 
-  gltf.scene.scale.set(100,100,100);
-  console.log(gltf.asset);
-  // gltf.scene.traverse( function( child ) {
-  //     if ( child instanceof THREE.Mesh ) {
-  //         child.material = materials.colorPrecision;
-  //         // console.log(child.material);
-  //     }
-  // } );
+// let tatamiFloor = new Model('../assets/models/TatamiFloor.fbx', colorPrecision);
+// tatamiFloor.Load(loader, scene, materials.colorPrecision);
 
-	scene.add( gltf.scene );
+let dimsum = new Model('../assets/models/scene.gltf', colorPrecision);
+dimsum.LoadGLTF(gltfLoader, scene, materials.basicMaterial);
 
-}, undefined, function ( error ) {
-
-	console.error( error );
-
-} );
-
-let tatamiFloor = new Model('../assets/models/TatamiFloor.fbx', colorPrecision);
-tatamiFloor.Load(loader, scene, materials.colorPrecision);
+//for debugging
+// document.addEventListener("click", function(){
+//   alert("Material Switched!");
+//   dimsum.SwitchMaterial(materials.basicMaterial);
+// });
 
 // console.log(tatamiFloor.material);
 
@@ -169,6 +178,8 @@ function UpdateGUI()
 function Update()
 {
   UpdateGUI();
+
+  dimsum.Rotate(new   THREE.Vector3(0,1,0), 0.001);
 }
 
 function Render()

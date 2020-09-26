@@ -19,10 +19,15 @@
 3. ~~Camera~~
 4. ~~Helpers~~
 5. ~~GUI categorization~~
+6. Model / Primitives Generalization
+7. Static debugger class for all objects
 
 **UI Design**
 1. ~~Helper params~~
 2. ~~Shader Params~~
+
+**Bugs**
+1. Cross-Origin Request Blocked
 
 ### Purpose
 I've been pretty frustrated with the lack of tools to quickly iterate shaders. Simply put, I don't want to have to write boilerplate code, install endless Dependencies or setup a custom IDE just to write basic GLSL code and preview it.

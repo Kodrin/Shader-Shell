@@ -3,6 +3,8 @@ import * as THREE from '../lib/three/build/three.module.js';
 
 class Object
 {
+  LOADED = false;
+
   constructor()
   {
     this.geometry = new THREE.BufferGeometry();
@@ -30,6 +32,16 @@ class Object
     this.object.rotation.x += axis.x * speed;
     this.object.rotation.y += axis.y * speed;
     this.object.rotation.z += axis.z * speed;
+  }
+
+  SetVisible(visibility)
+  {
+
+  }
+
+  AddToScene(scene)
+  {
+    scene.add(this.object);
   }
 
   Debug(param)
