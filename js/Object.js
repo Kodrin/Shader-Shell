@@ -22,16 +22,22 @@ class Object
 
   Move(direction = new THREE.Vector3(0,0,0), speed = 1)
   {
-    this.object.position.x += direction.x * speed;
-    this.object.position.y += direction.y * speed;
-    this.object.position.z += direction.z * speed;
+    if(this.LOADED)
+    {
+      this.object.position.x += direction.x * speed;
+      this.object.position.y += direction.y * speed;
+      this.object.position.z += direction.z * speed;
+    }
   }
 
   Rotate(axis = new THREE.Vector3(0,0,0), speed = 1)
   {
-    this.object.rotation.x += axis.x * speed;
-    this.object.rotation.y += axis.y * speed;
-    this.object.rotation.z += axis.z * speed;
+    if(this.LOADED)
+    {
+      this.object.rotation.x += axis.x * speed;
+      this.object.rotation.y += axis.y * speed;
+      this.object.rotation.z += axis.z * speed;
+    }
   }
 
   SetVisible(visibility)
@@ -42,6 +48,7 @@ class Object
   AddToScene(scene)
   {
     scene.add(this.object);
+    this.LOADED = true;
   }
 
   Debug(param)

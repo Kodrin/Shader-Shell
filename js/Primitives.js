@@ -4,6 +4,8 @@ import { Object } from './Object.js';
 
 class Cube extends Object
 {
+  LOADED = true;
+
   constructor(dimensions = new THREE.Vector3(1,1,1), color = 0x00f2ff)
   {
     super();
@@ -15,6 +17,8 @@ class Cube extends Object
 
 class Sphere extends Object
 {
+  LOADED = true;
+
   constructor(radius = 1, widthSegments = 32, heightSegments = 32, color = 0x00f2ff)
   {
     super();
@@ -26,6 +30,8 @@ class Sphere extends Object
 
 class CubeShader extends Object
 {
+  LOADED = true;
+
   constructor(dimensions = new THREE.Vector3(1,1,1), shader = null)
   {
     super();

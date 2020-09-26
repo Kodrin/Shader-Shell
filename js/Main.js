@@ -134,7 +134,9 @@ let gltfLoader = new GLTFLoader();
 
 let dimsum = new Model('../assets/models/scene.gltf', colorPrecision);
 dimsum.LoadGLTF(gltfLoader, scene, materials.basicMaterial);
-
+// let cube = new PRIMITIVES.Cube();
+// scene.add(cube.object);
+// dimsum.AddToScene(scene);
 //for debugging
 // document.addEventListener("click", function(){
 //   alert("Material Switched!");
@@ -181,7 +183,9 @@ function Update()
 {
   UpdateGUI();
 
-  dimsum.Rotate(new   THREE.Vector3(0,1,0), 0.001);
+  dimsum.Rotate(new   THREE.Vector3(1,1,1), 0.001);
+  // cube.Rotate(new   THREE.Vector3(1,1,1), 0.001);
+
 }
 
 function Render()
