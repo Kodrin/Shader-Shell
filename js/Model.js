@@ -12,26 +12,46 @@ class Model extends Object
 	gltfcameras; // Array<THREE.Camera>
 	gltfasset; // Object
 
+  modelPath;
+  texturePath;
+
+  material;
+  shader;
+  object;
+
   textures =
   {
-    diffuse: "preset",
-    roughness: "preset",
-    specular: "preset",
-    emissive: "preset",
-    normal: "preset",
-    height: "preset"
+    diffuse: THREE.ImageUtils.loadTexture('../assets/models/textures/lambert1_baseColor.png'),
+    roughness: this.GetTexture('../assets/models/textures/roughness.png'),
+    specular: this.GetTexture('../assets/models/textures/specular.png'),
+    emissive: this.GetTexture('../assets/models/textures/emissive.png'),
+    normal: this.GetTexture('../assets/models/textures/normal.png'),
+    height: this.GetTexture('../assets/models/textures/height.png')
   }
 
   materials =
   {
-    mat1: "preset",
-    mat2: "preset",
-    mat3: "preset",
-    mat4: "preset"
+    unlitMaterial: new THREE.MeshBasicMaterial( {
+      color: 0x00f2ff
+    } ),
+    basicMaterial: new THREE.MeshBasicMaterial(),
+    wireframeMaterial: new THREE.MeshBasicMaterial({
+        side: THREE.DoubleSide,
+        wireframe: true,
+        shininess: 100,
+        specular: 0x000, emissive: 0x000,
+        flatShading: false, depthWrite: true, depthTest: true
+    }),
+    phongMaterial: new THREE.MeshPhongMaterial({
+        color: 0x555555,
+        specular: 0xffffff,
+        shininess: 10,
+        flatShading: false,
+        side: THREE.DoubleSide,
+        skinning: true
+    }),
   }
-  material;
-  shader;
-  object;
+
 
   constructor(path)
   {
@@ -47,6 +67,7 @@ class Model extends Object
     // });
     // console.log(this.shaderMaterial);
     // this.model;
+    console.log(this.textures.diffuse);
   }
 
   //https://stackoverflow.com/questions/16200082/assigning-materials-to-an-objloader-model-in-three-js
@@ -90,7 +111,7 @@ class Model extends Object
       this.gltfcameras = gltf.cameras;
       this.gltfasset = gltf.asset;
 
-      console.log(this.gltfscene);
+      // console.log(this.gltfscene);
 
 
       gltf.scene.scale.set(100,100,100);
@@ -99,10 +120,16 @@ class Model extends Object
       // console.log(this.object);
       gltf.scene.traverse( function( child ) {
           if ( child instanceof THREE.Mesh ) {
-              // child.material = material;
+              child.material = material;
+
+              //Check if there is a custom shader to it
+              if('shaderMaterial' in this.materials)
+              {
+                child.material = this.materials.shaderMaterial;
+              }
               // console.log(child.material);
           }
-      } );
+      }.bind(this) );
 
     	scene.add( gltf.scene );
       this.LOADED = true;
@@ -115,6 +142,7 @@ class Model extends Object
 
     function HandleError(error)
     {
+      console.log(error);
       console.log("Error Loading model");
     }
 
@@ -131,6 +159,20 @@ class Model extends Object
               // console.log(child.material);
           }
       } );
+    }
+  }
+
+  GetTexture(path)
+  {
+    try {
+      // console.log(`Loaded Texture from ${path}`);
+      return THREE.ImageUtils.loadTexture(path);
+    } catch (e) {
+      // console.log("Texture not found ");
+      return null;
+    } finally {
+      // console.log("Texture not found ");
+      return null;
     }
   }
 

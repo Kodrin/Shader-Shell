@@ -79,7 +79,8 @@ let pointLight = new THREE.PointLight( 0xffffff, 0.8 );
 scene.add( camera );
 
 //TEXTURE/SHADER
-let tatamiTexture = THREE.ImageUtils.loadTexture('../assets/models/Tatami.jpg');
+let tatamiTexture = THREE.ImageUtils.loadTexture('../assets/models/textures/lambert1_baseColor.png');
+tatamiTexture.flipY = false;
 let shellShader = new ShellShader();
 shellShader.uniforms["baseTexture"].value = tatamiTexture;
 
@@ -133,14 +134,16 @@ let gltfLoader = new GLTFLoader();
 // tatamiFloor.Load(loader, scene, materials.colorPrecision);
 
 let dimsum = new Model('../assets/models/scene.gltf', colorPrecision);
-dimsum.LoadGLTF(gltfLoader, scene, materials.basicMaterial);
+dimsum.LoadGLTF(gltfLoader, scene, materials.colorPrecision);
+
 // let cube = new PRIMITIVES.Cube();
 // scene.add(cube.object);
 // dimsum.AddToScene(scene);
 //for debugging
 // document.addEventListener("click", function(){
-//   alert("Material Switched!");
-//   dimsum.SwitchMaterial(materials.basicMaterial);
+//   alert("CLick // DEBUG: !");
+//   // dimsum.SwitchMaterial(materials.basicMaterial);
+//   // dimsum.SetVisible(false);
 // });
 
 // console.log(tatamiFloor.material);

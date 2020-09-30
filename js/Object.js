@@ -42,7 +42,7 @@ class Object
 
   SetVisible(visibility)
   {
-
+    this.object.visible = visibility;
   }
 
   AddToScene(scene)

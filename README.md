@@ -39,7 +39,7 @@
 1. ~~Cross-Origin Request Blocked~~
 
 ### Purpose
-I've been pretty frustrated with the lack of tools to quickly iterate shaders. Simply put, I don't want to have to write boilerplate code, install endless Dependencies or setup a custom IDE just to write basic GLSL code and preview it.
+I've been pretty frustrated with the lack of tools to quickly iterate shaders. Simply put, I don't want to have to write boilerplate code, install endless Dependencies, or setup a custom IDE just to write basic GLSL code and preview it.
 
 ShaderShell solves that by:
 1- Providing a simple environment with minimal dependencies out of the package. No boilerplate needed, everything is provided and you just create a ShellShader instance to code your GLSL shader.
