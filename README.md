@@ -31,6 +31,7 @@
 **UI Design**
 1. ~~Helper params~~
 2. ~~Shader Params~~
+3. Need to add support for vector, color and bool params
 
 **Deploying**
 1. ~~Hosting at 'shadershell.codrinmihail.com'~~

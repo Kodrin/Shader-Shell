@@ -19,6 +19,9 @@ import { ShellPostProcess } from '../shaders/ShellPostProcess.js';
 import { ColorPrecision } from '../shaders/ColorPrecision.js';
 import { BasicDiffuse } from '../shaders/BasicDiffuse.js';
 import { PixelateEffect } from '../shaders/PixelateEffect.js';
+import { NormalPass } from '../shaders/NormalPass.js';
+
+import { FilmShader } from '../lib/three/examples/jsm/shaders/FilmShader.js';
 
 //GLOBAL
 let THREEPATH, GENERAL_SETTINGS, CAMERA_SETTINGS, GUISETTINGS, SHADER_PARAMS;
@@ -155,6 +158,10 @@ let pixelate = new PixelateEffect(window);
 // composer.addPass( pixelate.shaderPass );
 let screenShader = new ShellPostProcess();
 // composer.addPass( screenShader.shaderPass );
+let normalShader = new NormalPass(window);
+composer.addPass( normalShader.shaderPass );
+// let filmShader = new FilmShader();
+// composer.addPass( filmShader );
 
 //GUI
 gui = new GUI({name: 'Shader Params'});
@@ -186,7 +193,7 @@ function Update()
 {
   UpdateGUI();
 
-  dimsum.Rotate(new   THREE.Vector3(1,1,1), 0.001);
+  dimsum.Rotate(new   THREE.Vector3(0,1,0), 0.001);
   // cube.Rotate(new   THREE.Vector3(1,1,1), 0.001);
 
 }

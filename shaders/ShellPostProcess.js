@@ -8,6 +8,8 @@ class ShellPostProcess
   //UNIFORMS
   // tDiffuse = null;
 
+  DEBUG = false;
+
   PROPERTIES =
   {
     grayscale : 1.0
@@ -96,9 +98,37 @@ class ShellPostProcess
     const properties = Object.entries(this.PROPERTIES);
     for (const [property, value] of properties)
     {
-      this.uniforms[`${property}`].value = value;
-      this.shaderPass.uniforms[`${property}`].value = value;
+      // this.uniforms[`${property}`].value = value;
+      // this.shaderPass.uniforms[`${property}`].value = value;
+
+      //NOTE: will need to add unique clauses for vector3 and 4s
+      if(!this.DEBUG)
+      {
+        let propertyValue = value;
+
+        if(propertyValue instanceof THREE.Vector2)
+        {
+          console.log(`${property} is Vector2`);
+        }
+        else if(propertyValue instanceof THREE.Vector3)
+        {
+          console.log(`${property} is Vector3`);
+        }
+        else if(propertyValue instanceof THREE.Vector4){
+          console.log(`${property} is Vector4`);
+        }
+
+      }
+      if(this.shaderPass.uniforms[`${property}`])
+      {
+        let shaderPropertyValue = this.shaderPass.uniforms[`${property}`].value;
+
+      }
+
+      // console.log(shaderPropertyValue);
     }
+
+    this.DEBUG = true;
   }
 
 }

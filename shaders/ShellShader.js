@@ -1,4 +1,10 @@
 // TO BE CONTINUED
+/*
+NOTES:
+dat gui color doesnt work with vec3
+need to find a way to add vectors to gui
+
+*/
 import * as THREE from '../lib/three/build/three.module.js';
 
 class ShellShader
@@ -26,7 +32,6 @@ class ShellShader
       fragmentShader: this.FragmentPass()
     });
   }
-
 
   //PASSES
   VertexPass()

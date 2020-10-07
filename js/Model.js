@@ -142,8 +142,8 @@ class Model extends Object
 
     function HandleError(error)
     {
-      console.log(error);
       console.log("Error Loading model");
+      console.log(error);
     }
 
   }
@@ -174,6 +174,12 @@ class Model extends Object
       // console.log("Texture not found ");
       return null;
     }
+  }
+
+  //for each texture set it to the shader 
+  SetTexturesToShader()
+  {
+
   }
 
   // Move(direction = new THREE.Vector3(0,0,0), speed = 1)
